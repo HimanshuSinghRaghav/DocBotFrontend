@@ -22,9 +22,9 @@ function AdminDashboardHome() {
   // const { t } = useLanguage();
 
   const systemStats = {
-    totalUsers: 156,
+    totalUsers: 4,
     activeLocations: 8,
-    totalModules: 24,
+    totalModules: 89,
     completionRate: 82,
     averageScore: 88,
   };
@@ -79,17 +79,7 @@ function AdminDashboardHome() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Building2 className="h-5 w-5 text-green-600" />
-              <div>
-                <p className="text-2xl font-bold text-gray-900">{systemStats.activeLocations}</p>
-                <p className="text-sm text-gray-600">Locations</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+   
 
         <Card>
           <CardContent className="p-4">
@@ -128,80 +118,9 @@ function AdminDashboardHome() {
         </Card>
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Button className="h-16 flex flex-col items-center justify-center space-y-1">
-          <Plus className="h-5 w-5" />
-          <span className="text-sm">Add User</span>
-        </Button>
-        
-        <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1">
-          <BookOpen className="h-5 w-5" />
-          <span className="text-sm">Create Module</span>
-        </Button>
-        
-        <Button variant="outline" className="h-16 flex flex-col items-center justify-center space-y-1">
-          <BarChart3 className="h-5 w-5" />
-          <span className="text-sm">View Reports</span>
-        </Button>
-        
-        <Button 
-          variant="outline" 
-          className="h-16 flex flex-col items-center justify-center space-y-1 hover:bg-blue-50 hover:border-blue-200"
-          onClick={() => window.location.href = '/crew'}
-        >
-          <Users className="h-5 w-5 text-blue-600" />
-          <span className="text-sm">Crew Portal</span>
-        </Button>
-      </div>
+     
 
-      {/* Location Performance */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Building2 className="h-5 w-5 text-blue-600" />
-            <span>Location Performance</span>
-          </CardTitle>
-          <CardDescription>Training completion across all locations</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {locations.map((location) => (
-            <Card key={location.id} className="border hover:shadow-md transition-shadow duration-200">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{location.name}</h3>
-                    <p className="text-sm text-gray-600">{location.staff} staff members</p>
-                  </div>
-                  <Badge 
-                    variant={location.status === 'excellent' ? 'default' : 
-                           location.status === 'good' ? 'secondary' : 'destructive'}
-                  >
-                    {location.status.replace('_', ' ')}
-                  </Badge>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4 mb-3">
-                  <div>
-                    <p className="text-sm text-gray-600">Completion Rate</p>
-                    <p className="text-lg font-semibold text-gray-900">{location.completionRate}%</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Average Score</p>
-                    <p className="text-lg font-semibold text-gray-900">{location.averageScore}%</p>
-                  </div>
-                </div>
-                
-                <Progress value={location.completionRate} className="h-2 mb-3" />
-                
-                <Button variant="outline" size="sm" className="w-full">
-                  View Details
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </CardContent>
-      </Card>
+    
 
       {/* Recent Activity */}
       <Card>

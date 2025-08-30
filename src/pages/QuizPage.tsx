@@ -14,8 +14,7 @@ import {
   X, 
   RotateCcw,
   Trophy,
-  Target,
-  AlertCircle
+  Target
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -35,7 +34,7 @@ interface Quiz {
   title: string;
   description: string;
   category: string;
-  timeLimit: number; // in seconds
+  time_limit: number; // in seconds
   passingScore: number;
   questions: QuizQuestion[];
 }
@@ -53,11 +52,11 @@ export default function QuizPage() {
   const quizzes: Quiz[] = [
     {
       id: 'food-safety-basics',
-      title: 'Food Safety Basics',
-      description: 'Test your knowledge of essential food safety protocols',
+      title: 'Food Safety Fundamentals',
+      description: 'Master the essential principles of food safety, hygiene protocols, and contamination prevention',
       category: 'Food Safety',
-      timeLimit: 600, // 10 minutes
-      passingScore: 80,
+      time_limit: 1200, // 20 minutes
+      passingScore: 70,
       questions: [
         {
           id: 'temp-danger-zone',
@@ -103,15 +102,34 @@ export default function QuizPage() {
           difficulty: 'medium',
           category: 'Customer Safety',
         },
+        {
+          id: 'storage-temp',
+          type: 'mcq',
+          question: 'What is the proper storage temperature for refrigerated foods?',
+          options: ['Below 32°F (0°C)', 'Below 40°F (4°C)', 'Below 45°F (7°C)', 'Below 50°F (10°C)'],
+          correctAnswer: 'Below 40°F (4°C)',
+          explanation: 'Refrigerated foods should be stored at or below 40°F (4°C) to prevent bacterial growth.',
+          difficulty: 'easy',
+          category: 'Temperature Control',
+        },
+        {
+          id: 'first-in-first-out',
+          type: 'true_false',
+          question: 'The FIFO (First In, First Out) method helps prevent food spoilage.',
+          correctAnswer: 'true',
+          explanation: 'FIFO ensures older products are used first, reducing waste and maintaining food quality.',
+          difficulty: 'easy',
+          category: 'Food Safety',
+        }
       ]
     },
     {
       id: 'customer-service',
       title: 'Customer Service Excellence',
-      description: 'Master the art of exceptional customer service',
+      description: 'Master the art of exceptional customer service and create memorable dining experiences',
       category: 'Customer Service',
-      timeLimit: 480, // 8 minutes
-      passingScore: 85,
+      time_limit: 960, // 16 minutes
+      passingScore: 75,
       questions: [
         {
           id: 'greeting-time',
@@ -132,6 +150,142 @@ export default function QuizPage() {
           difficulty: 'medium',
           category: 'Sales Techniques',
         },
+        {
+          id: 'complaint-handling',
+          type: 'mcq',
+          question: 'What is the best first step when handling a customer complaint?',
+          options: ['Apologize immediately', 'Listen actively and empathize', 'Offer a discount', 'Call the manager'],
+          correctAnswer: 'Listen actively and empathize',
+          explanation: 'Active listening and empathy are crucial first steps in resolving customer complaints.',
+          difficulty: 'medium',
+          category: 'Service Standards',
+        },
+        {
+          id: 'phone-etiquette',
+          type: 'true_false',
+          question: 'You should always smile when speaking to customers on the phone.',
+          correctAnswer: 'true',
+          explanation: 'Smiling affects your tone of voice and can be "heard" over the phone, making customers feel more welcome.',
+          difficulty: 'easy',
+          category: 'Communication',
+        }
+      ]
+    },
+    {
+      id: 'menu-knowledge',
+      title: 'Menu Knowledge & Allergies',
+      description: 'Comprehensive understanding of menu items, ingredients, and allergen information',
+      category: 'Menu Knowledge',
+      time_limit: 1440, // 24 minutes
+      passingScore: 80,
+      questions: [
+        {
+          id: 'major-allergens',
+          type: 'mcq',
+          question: 'Which of the following are considered major food allergens?',
+          options: ['Milk, eggs, fish', 'Tree nuts, peanuts, soy', 'Wheat, shellfish, sesame', 'All of the above'],
+          correctAnswer: 'All of the above',
+          explanation: 'All of these are among the 9 major allergens that must be clearly identified on menus.',
+          difficulty: 'medium',
+          category: 'Allergens',
+        },
+        {
+          id: 'gluten-free-prep',
+          type: 'true_false',
+          question: 'Gluten-free items can be prepared on the same surfaces as regular items if cleaned first.',
+          correctAnswer: 'false',
+          explanation: 'Cross-contamination can occur even with cleaning. Separate prep areas are recommended for gluten-free items.',
+          difficulty: 'hard',
+          category: 'Allergens',
+        },
+        {
+          id: 'ingredient-knowledge',
+          type: 'mcq',
+          question: 'If a customer asks about ingredients you\'re unsure about, you should:',
+          options: ['Guess based on similar dishes', 'Tell them it\'s probably fine', 'Check with the kitchen or manager', 'Suggest they order something else'],
+          correctAnswer: 'Check with the kitchen or manager',
+          explanation: 'Never guess about ingredients, especially regarding allergies. Always verify with knowledgeable staff.',
+          difficulty: 'easy',
+          category: 'Menu Knowledge',
+        }
+      ]
+    },
+    {
+      id: 'pos-systems',
+      title: 'POS System Operations',
+      description: 'Master point-of-sale system operations and payment processing procedures',
+      category: 'Technology',
+      time_limit: 720, // 12 minutes
+      passingScore: 75,
+      questions: [
+        {
+          id: 'payment-processing',
+          type: 'mcq',
+          question: 'What should you do first when processing a credit card payment?',
+          options: ['Insert the card', 'Enter the amount', 'Ask for ID', 'Print receipt'],
+          correctAnswer: 'Enter the amount',
+          explanation: 'Always enter the correct amount first before processing any payment to ensure accuracy.',
+          difficulty: 'easy',
+          category: 'Payment Processing',
+        },
+        {
+          id: 'receipt-policy',
+          type: 'true_false',
+          question: 'You should always offer a receipt to customers.',
+          correctAnswer: 'true',
+          explanation: 'Offering receipts is standard practice for transparency and customer service.',
+          difficulty: 'easy',
+          category: 'Customer Service',
+        },
+        {
+          id: 'order-modification',
+          type: 'mcq',
+          question: 'How should you handle a customer request to modify their order after it\'s been sent to the kitchen?',
+          options: ['Tell them it\'s too late', 'Ignore the request', 'Check with the kitchen immediately', 'Charge extra for changes'],
+          correctAnswer: 'Check with the kitchen immediately',
+          explanation: 'Always communicate with the kitchen promptly to see if modifications are possible.',
+          difficulty: 'medium',
+          category: 'Order Management',
+        }
+      ]
+    },
+    {
+      id: 'emergency-procedures',
+      title: 'Emergency Procedures & Safety',
+      description: 'Critical knowledge for handling emergencies and maintaining workplace safety',
+      category: 'Safety',
+      time_limit: 900, // 15 minutes
+      passingScore: 85,
+      questions: [
+        {
+          id: 'fire-safety',
+          type: 'mcq',
+          question: 'In case of a grease fire in the kitchen, you should:',
+          options: ['Use water to extinguish it', 'Use a fire extinguisher', 'Turn off heat source and cover if safe', 'Run away immediately'],
+          correctAnswer: 'Turn off heat source and cover if safe',
+          explanation: 'For grease fires, turn off heat and cover with a lid if safe to do so. Never use water on grease fires.',
+          difficulty: 'hard',
+          category: 'Fire Safety',
+        },
+        {
+          id: 'injury-response',
+          type: 'true_false',
+          question: 'If someone is injured, you should move them to a safe location immediately.',
+          correctAnswer: 'false',
+          explanation: 'Do not move an injured person unless there is immediate danger, as this could worsen injuries.',
+          difficulty: 'medium',
+          category: 'First Aid',
+        },
+        {
+          id: 'choking-response',
+          type: 'mcq',
+          question: 'If a customer is choking and cannot speak or cough, you should:',
+          options: ['Give them water', 'Pat their back gently', 'Perform the Heimlich maneuver', 'Call 911 only'],
+          correctAnswer: 'Perform the Heimlich maneuver',
+          explanation: 'If trained, perform the Heimlich maneuver immediately while someone calls 911.',
+          difficulty: 'hard',
+          category: 'First Aid',
+        }
       ]
     }
   ];
@@ -143,7 +297,7 @@ export default function QuizPage() {
     if (startTime && currentQuiz && !showResults) {
       const timer = setInterval(() => {
         const elapsed = Math.floor((Date.now() - startTime.getTime()) / 1000);
-        const remaining = currentQuiz.timeLimit - elapsed;
+        const remaining = currentQuiz.time_limit - elapsed;
         
         if (remaining <= 0) {
           handleSubmitQuiz();
@@ -224,7 +378,7 @@ export default function QuizPage() {
     setAnswers({});
     setShowResults(false);
     setStartTime(new Date());
-    setTimeLeft(currentQuiz?.timeLimit || 0);
+    setTimeLeft(currentQuiz?.time_limit || 0);
   };
 
   const formatTime = (seconds: number) => {
@@ -258,7 +412,7 @@ export default function QuizPage() {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div className="flex items-center space-x-2">
                       <Clock className="h-4 w-4 text-gray-500" />
-                      <span>{Math.round(quiz.timeLimit / 60)} min</span>
+                      <span>{Math.round(quiz.time_limit / 60)} min</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Target className="h-4 w-4 text-gray-500" />
@@ -275,7 +429,7 @@ export default function QuizPage() {
                     onClick={() => {
                       setSelectedQuiz(quiz.id);
                       setStartTime(new Date());
-                      setTimeLeft(quiz.timeLimit);
+                      setTimeLeft(quiz.time_limit);
                     }}
                   >
                     Start Quiz

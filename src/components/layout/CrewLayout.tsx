@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const CrewLayout: React.FC = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
 
   // Redirect if not crew
   if (user?.role !== 'crew') {
@@ -30,13 +30,19 @@ const CrewLayout: React.FC = () => {
               <span className="text-sm text-muted-foreground">
                 Welcome, {user?.name || user?.email}
               </span>
+              <button
+                onClick={signOut}
+                className="px-3 py-1.5 rounded-lg bg-destructive text-destructive-foreground text-sm font-medium hover:opacity-90 transition"
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="minimal-container minimal-section">
+      <main className="minimal-container minimal-section pt-0">
         <Outlet />
       </main>
     </div>

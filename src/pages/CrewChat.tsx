@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { gsap } from 'gsap';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { Card, CardContent } from '../components/ui/card';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '../components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { ArrowLeft, Send, User, Volume2, VolumeX, Mic, MicOff, Settings } from 'lucide-react';
+import { ArrowLeft, Send, User, Volume2, Mic, MicOff, Settings, Bot, Sparkles, Zap } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
@@ -23,6 +24,7 @@ interface Message {
 const CrewChat: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const containerRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -44,6 +46,19 @@ const CrewChat: React.FC = () => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [hasMicrophonePermission, setHasMicrophonePermission] = useState<boolean | null>(null);
+
+  // GSAP entrance animations
+  useEffect(() => {
+    if (containerRef.current) {
+      gsap.from(containerRef.current.children, {
+        y: 30,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: "power3.out"
+      });
+    }
+  }, []);
 
   // Helper function to check if browser supports microphone
   const isMicrophoneSupported = (): boolean => {
@@ -86,7 +101,7 @@ const CrewChat: React.FC = () => {
         setHasMicrophonePermission(false);
       }
       // 'prompt' state means we haven't asked yet, so keep as null
-    } catch (error) {
+    } catch {
       // Permission API not supported, we'll check when user tries to use it
       console.log('Permission API not supported, will check on first use');
       // Don't set to false, let it remain null so user can try
@@ -377,7 +392,6 @@ const CrewChat: React.FC = () => {
       };
 
       setMessages(prev => [...prev, botMessage]);
-      toast.success('Response received!');
     } catch (error: any) {
       console.error('API Error:', error);
       const errorMessage = error.response?.data?.error || 'Failed to get response. Please try again.';
@@ -404,37 +418,75 @@ const CrewChat: React.FC = () => {
   };
 
   const handleBack = () => {
-    navigate('/crew');
+    toast.success('Returning to dashboard...');
+      if(user?.role === 'admin'){
+
+                      navigate('/admin')
+}else{
+
+  navigate('/crew');
+}
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Minimal Header */}
-      <div className="border-b border-border/50 bg-card/50">
-        <div className="minimal-container">
-          <div className="flex items-center justify-between h-16">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col">
+      <motion.div 
+        ref={containerRef}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex-1 flex flex-col"
+      >
+      {/* Header Section */}
+      <motion.div 
+        initial={{ y: 0, opacity: 1 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="bg-white/80 backdrop-blur-lg border-b border-blue-200/50 shadow-sm sticky top-0 z-10"
+      >
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
-              <Button
-                variant="ghost"
-                onClick={handleBack}
-                className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
-              </Button>
-              <div className="h-4 w-px bg-border"></div>
-              <h1 className="text-lg font-medium text-foreground">AI Training Assistant</h1>
+                <Button
+                  variant="outline"
+                  onClick={handleBack}
+                  className="bg-white/80 border-gray-300 hover:bg-gray-50 px-6 py-3 rounded-xl"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Dashboard
+                </Button>
+              </motion.div>
+              
+              <div className="h-6 w-px bg-gray-300"></div>
+              
+              <div className="flex items-center space-x-4">
+                <motion.div
+                  className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg"
+                  whileHover={{ rotate: 360, scale: 1.1 }}
+                  transition={{ duration: 0.8 }}
+                >
+                  <Bot className="h-6 w-6 text-white" />
+                </motion.div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-800">AI Training Assistant</h1>
+                  <p className="text-gray-600">Get instant answers and guidance</p>
+                </div>
+              </div>
             </div>
             
-            {/* Voice Selection */}
+            {/* Voice Selection and Status */}
             <div className="flex items-center space-x-4">
+             
+              
               <div className="flex items-center space-x-2">
-                <Settings className="h-4 w-4 text-muted-foreground" />
+                <Settings className="h-4 w-4 text-gray-600" />
                 <Select value={selectedVoice?.name || ''} onValueChange={(value) => {
                   const voice = availableVoices.find(v => v.name === value);
                   setSelectedVoice(voice || null);
                 }}>
-                  <SelectTrigger className="w-48 minimal-input">
+                  <SelectTrigger className="w-48 bg-white/80 border-gray-300 rounded-xl">
                     <SelectValue placeholder="Select Voice" />
                   </SelectTrigger>
                   <SelectContent>
@@ -449,146 +501,267 @@ const CrewChat: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Chat Messages */}
-      <div className="minimal-container h-[calc(100vh-8rem)] flex flex-col">
-        <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className={`flex max-w-[80%] ${message.isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-                  <Avatar className={`h-8 w-8 ${message.isUser ? 'ml-2' : 'mr-2'}`}>
-                    <AvatarFallback className={message.isUser ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}>
-                      {message.isUser ? (user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || <User className="h-4 w-4" />) : 'AI'}
-                    </AvatarFallback>
-                  </Avatar>
-                  
-                  <div className={`flex flex-col ${message.isUser ? 'items-end' : 'items-start'}`}>
-                    <div
-                      className={`rounded-lg px-4 py-2 ${
-                        message.isUser
-                          ? 'bg-primary text-primary-foreground'
-                          : 'minimal-card'
-                      }`}
+      {/* Chat Messages Container */}
+      <div className="flex-1 flex flex-col max-w-6xl mx-auto px-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="flex-1 flex flex-col min-h-0"
+        >
+          <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
+            <div className="space-y-6">
+             
+              {messages.map((message, index) => (
+                <motion.div
+                  key={message.id}
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                  className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div className={`flex max-w-[80%] ${message.isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
                     >
-                      {message.isUser ? (
-                        <p className="whitespace-pre-wrap">{message.text}</p>
-                      ) : (
-                        <div className="text-sm leading-relaxed">
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                            {message.text}
-                          </ReactMarkdown>
-                        </div>
-                      )}
-                    </div>
+                      <Avatar className={`h-12 w-12 ${message.isUser ? 'ml-4' : 'mr-4'} shadow-lg`}>
+                        <AvatarFallback className={`${message.isUser 
+                          ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white' 
+                          : 'bg-gradient-to-r from-orange-500 to-pink-500 text-white'} font-bold text-lg`}>
+                          {message.isUser ? (
+                            user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || <User className="h-6 w-6" />
+                          ) : (
+                            <Bot className="h-6 w-6" />
+                          )}
+                        </AvatarFallback>
+                      </Avatar>
+                    </motion.div>
                     
-                    <div className="flex items-center space-x-2 mt-2">
-                      <span className="text-xs text-muted-foreground">
-                        {formatTime(message.timestamp)}
-                      </span>
+                    <div className={`flex flex-col ${message.isUser ? 'items-end' : 'items-start'}`}>
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        className={`rounded-2xl px-6 py-4 shadow-lg ${message.isUser
+                          ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                          : 'bg-white border border-gray-200 text-gray-800'}`}
+                      >
+                        {message.isUser ? (
+                          <p className="whitespace-pre-wrap leading-relaxed text-lg">
+                           
+                            {message.text}</p>
+                        ) : (
+                          <div className="text-base leading-relaxed">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                               
+                              {"Hey Satish, \n \n" +  message.text}
+                            </ReactMarkdown>
+                          </div>
+                        )}
+                      </motion.div>
                       
-                      {!message.isUser && (
-                        <div className="flex items-center space-x-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => speakingMessageId === message.id ? stopSpeaking() : speakText(message.text, message.id)}
-                            className="h-6 w-6 p-0 hover:bg-muted/50 text-muted-foreground hover:text-foreground"
-                          >
-                            {speakingMessageId === message.id ? (
-                              <div className="flex space-x-1">
-                                <div className="w-1 h-3 bg-destructive rounded-full animate-bounce"></div>
-                                <div className="w-1 h-3 bg-destructive rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                                <div className="w-1 h-3 bg-destructive rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                              </div>
-                            ) : (
-                              <Volume2 className="h-3 w-3" />
-                            )}
-                          </Button>
-                        </div>
-                      )}
+                      <div className="flex items-center space-x-3 mt-3">
+                        <span className="text-sm text-gray-500 font-medium">
+                          {formatTime(message.timestamp)}
+                        </span>
+                        
+                        {!message.isUser && (
+                          <div className="flex items-center space-x-2">
+                            <motion.div
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                            >
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => speakingMessageId === message.id ? stopSpeaking() : speakText(message.text, message.id)}
+                                className="h-8 w-8 p-0 rounded-full bg-white/80 hover:bg-gray-100 shadow-md border border-gray-200"
+                              >
+                                {speakingMessageId === message.id ? (
+                                  <motion.div 
+                                    className="flex space-x-1"
+                                    animate={{ scale: [1, 1.1, 1] }}
+                                    transition={{ duration: 0.5, repeat: Infinity }}
+                                  >
+                                    <div className="w-1 h-3 bg-red-500 rounded-full animate-bounce"></div>
+                                    <div className="w-1 h-3 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                                    <div className="w-1 h-3 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                                  </motion.div>
+                                ) : (
+                                  <Volume2 className="h-4 w-4 text-gray-600" />
+                                )}
+                              </Button>
+                            </motion.div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
-            
-            {isTyping && (
-              <div className="flex justify-start">
-                <div className="flex max-w-[80%]">
-                  <Avatar className="h-8 w-8 mr-2">
-                    <AvatarFallback className="bg-muted text-muted-foreground">AI</AvatarFallback>
-                  </Avatar>
-                  <div className="minimal-card px-4 py-2">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                </motion.div>
+              ))}
+              
+              {isTyping && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex justify-start"
+                >
+                  <div className="flex max-w-[80%]">
+                    <Avatar className="h-12 w-12 mr-4 shadow-lg">
+                      <AvatarFallback className="bg-gradient-to-r from-orange-500 to-pink-500 text-white">
+                        <Bot className="h-6 w-6" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="bg-white rounded-2xl px-6 py-4 shadow-lg border border-gray-200">
+                      <div className="flex space-x-2">
+                        <motion.div 
+                          className="w-3 h-3 bg-blue-500 rounded-full"
+                          animate={{ scale: [1, 1.5, 1] }}
+                          transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+                        />
+                        <motion.div 
+                          className="w-3 h-3 bg-purple-500 rounded-full"
+                          animate={{ scale: [1, 1.5, 1] }}
+                          transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+                        />
+                        <motion.div 
+                          className="w-3 h-3 bg-pink-500 rounded-full"
+                          animate={{ scale: [1, 1.5, 1] }}
+                          transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </ScrollArea>
+                </motion.div>
+              )}
+            </div>
+          </ScrollArea>
+        </motion.div>
 
-        {/* Input Area */}
-        <Card className="rounded-none border-t border-border/50">
-          <CardContent className="p-4">
-            <div className="flex space-x-3">
-              {/* Microphone Button */}
-              <Button
-                variant={isListening ? "destructive" : "outline"}
-                size="icon"
-                onClick={isListening ? stopListening : startListening}
-                disabled={hasMicrophonePermission === false}
-                className="shrink-0 h-10 w-10 border-border/50 hover:bg-muted/50"
-                title={isListening ? "Stop listening" : "Start voice input"}
-              >
-                {isListening ? (
-                  <MicOff className="h-4 w-4" />
-                ) : (
-                  <Mic className="h-4 w-4" />
-                )}
-              </Button>
-              
-              <Input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={isListening ? "Listening... Speak now!" : "Ask me anything about procedures, safety, or training..."}
-                className="flex-1 h-10 minimal-input"
-                disabled={isListening}
-              />
-              
+        {/* Enhanced Input Area */}
+        <motion.div 
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="bg-white/90 backdrop-blur-lg border-t border-blue-200/50 shadow-lg p-6 mt-auto"
+        >
+          {/* Quick Suggestions */}
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mb-6"
+          >
+            <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+              <Zap className="h-4 w-4 mr-2 text-purple-600" />
+              Quick Suggestions
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              {[
+                "What are the safety protocols?",
+                "How do I handle emergencies?",
+                "Menu item ingredients",
+                "Cleaning procedures"
+              ].map((suggestion, index) => (
+                <motion.button
+                  key={suggestion}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.7 + index * 0.1 }}
+                  whileHover={{ scale: 1.05, backgroundColor: "rgb(99 102 241)" }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setInputValue(suggestion)}
+                  className="px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 rounded-xl text-sm font-medium hover:text-white transition-all duration-300 shadow-md border border-blue-200"
+                >
+                  {suggestion}
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+
+          <div className="flex space-x-4">
+            {/* Enhanced Microphone Button */}
+       
+            <Input
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder={isListening ? "Listening... Speak now!" : "Ask me anything about procedures, safety, or training..."}
+              className="flex-1 h-14 px-6 text-lg bg-white/80 border-2 border-blue-200 rounded-xl shadow-lg focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all duration-300"
+              disabled={isListening}
+            />
+            
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
               <Button 
                 onClick={sendMessage} 
                 disabled={!inputValue.trim() || isTyping || isListening}
-                size="icon"
-                className="shrink-0 h-10 w-10 minimal-button"
+                size="lg"
+                className="h-14 w-14 rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg border-0 transition-all duration-300 disabled:opacity-50"
               >
-                <Send className="h-4 w-4" />
+                {isTyping ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  >
+                    <Sparkles className="h-6 w-6" />
+                  </motion.div>
+                ) : (
+                  <>
+                  Ask
+                 <Sparkles className="h-6 w-6" />
+                  </>
+                )}
               </Button>
-            </div>
-            
-            {/* Speech-to-Text Status */}
-            {isListening && (
-              <div className="mt-3 flex items-center space-x-2 text-sm text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse"></div>
-                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                </div>
-                <span className="font-medium">Listening... {transcript && `"${transcript}"`}</span>
+            </motion.div>
+          </div>
+          
+          {/* Enhanced Speech-to-Text Status */}
+          {isListening && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 flex items-center space-x-3 bg-gradient-to-r from-blue-100 to-purple-100 px-6 py-4 rounded-xl shadow-md border border-blue-200"
+            >
+              <div className="flex space-x-2">
+                <motion.div 
+                  className="w-3 h-3 bg-blue-500 rounded-full"
+                  animate={{ scale: [1, 1.5, 1] }}
+                  transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+                />
+                <motion.div 
+                  className="w-3 h-3 bg-purple-500 rounded-full"
+                  animate={{ scale: [1, 1.5, 1] }}
+                  transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+                />
+                <motion.div 
+                  className="w-3 h-3 bg-pink-500 rounded-full"
+                  animate={{ scale: [1, 1.5, 1] }}
+                  transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+                />
               </div>
-            )}
-          </CardContent>
-        </Card>
+              <div className="flex-1">
+                <div className="font-semibold text-blue-800 text-lg">🎤 Listening...</div>
+                {transcript && (
+                  <div className="text-purple-700 font-medium mt-1">
+                    "{transcript}"
+                  </div>
+                )}
+              </div>
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+                className="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg"
+              >
+                <Mic className="h-6 w-6 text-white" />
+              </motion.div>
+            </motion.div>
+          )}
+        </motion.div>
       </div>
+      </motion.div>
     </div>
   );
 };

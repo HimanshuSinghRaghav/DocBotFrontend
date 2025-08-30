@@ -6,12 +6,13 @@ import { OfflineProvider } from './contexts/OfflineContext';
 import AuthGuard from './components/auth/AuthGuard';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
-import ClarkLoginPage from './pages/ClarkLoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import ShiftLeadDashboard from './pages/ShiftLeadDashboard';
 import CrewDashboard from './pages/CrewDashboard';
 import CrewLessons from './pages/CrewLessons';
+import LessonDetail from './pages/LessonDetail';
 import CrewQuiz from './pages/CrewQuiz';
+import QuizDetail from './pages/QuizDetail';
 import CrewChat from './pages/CrewChat';
 import CrewLayout from './components/layout/CrewLayout';
 import ChatInterface from './pages/ChatInterface';
@@ -49,6 +50,10 @@ function App() {
                     </AuthGuard>
                   }
                 />
+                   <Route path="admin/lessons" element={<CrewLessons />} />
+                  <Route path="admin/lesson/:lessonId" element={<LessonDetail />} />
+                  <Route path="admin/quiz" element={<CrewQuiz />} />
+                  <Route path="admin/quiz/:quizId" element={<QuizDetail />} />
                 <Route
                   path="/crew/*"
                   element={
@@ -59,7 +64,9 @@ function App() {
                 >
                   <Route index element={<CrewDashboard />} />
                   <Route path="lessons" element={<CrewLessons />} />
+                  <Route path="lesson/:lessonId" element={<LessonDetail />} />
                   <Route path="quiz" element={<CrewQuiz />} />
+                  <Route path="quiz/:quizId" element={<QuizDetail />} />
                   <Route path="chat" element={<CrewChat />} />
                 </Route>
                 <Route
@@ -78,14 +85,7 @@ function App() {
                     </AuthGuard>
                   }
                 />
-                <Route
-                  path="/quiz"
-                  element={
-                    <AuthGuard allowedRoles={['admin', 'shift_lead', 'crew']}>
-                      <QuizPage />
-                    </AuthGuard>
-                  }
-                />
+                
                 <Route
                   path="/documents/upload"
                   element={

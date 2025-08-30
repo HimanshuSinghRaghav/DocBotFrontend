@@ -11,7 +11,6 @@ import {
   BarChart3,
   Settings,
   LogOut,
-  Globe,
   FileText
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -35,21 +34,16 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const items = [
       { icon: Home, label: t('dashboard'), path: basePath },
       { icon: MessageCircle, label: t('chat'), path: '/chat' },
-      { icon: BookOpen, label: t('procedures'), path: '/procedures' },
-      { icon: Brain, label: t('quiz'), path: '/quiz' },
+      { icon: BookOpen, label: t('procedures'), path: '/admin/lessons' },
+      { icon: Brain, label: t('quiz'), path: '/admin/quiz' },
     ];
 
     if (user?.role === 'admin' || user?.role === 'shift_lead') {
       items.push(
-        { icon: Users, label: 'Team', path: `${basePath}/team` },
-        { icon: BarChart3, label: 'Analytics', path: `${basePath}/analytics` },
         { icon: FileText, label: t('documents'), path: '/documents/upload' }
       );
     }
 
-    if (user?.role === 'admin') {
-      items.push({ icon: Settings, label: 'Settings', path: `${basePath}/settings` });
-    }
 
     return items;
   };

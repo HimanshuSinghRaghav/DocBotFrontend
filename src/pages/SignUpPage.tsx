@@ -199,8 +199,7 @@ export default function SignUpPage() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="admin">Administrator</SelectItem>
-                      <SelectItem value="shift_lead">Shift Lead</SelectItem>
-                      <SelectItem value="crew">Crew Member</SelectItem>
+                       <SelectItem value="crew">Crew Member</SelectItem>
                     </SelectContent>
                   </Select>
                 </motion.div>

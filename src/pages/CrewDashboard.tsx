@@ -2,58 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { BookOpen, Brain, MessageCircle, ArrowLeft, LogOut, User } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { BookOpen, Brain, MessageCircle } from 'lucide-react';
 
 const CrewDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
-
-  const handleLogout = () => {
-    signOut();
-    navigate('/login');
-  };
-
-  const handleBack = () => {
-    navigate('/dashboard');
-  };
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Minimal Header */}
-      <div className="border-b border-border/50 bg-card/50">
-        <div className="minimal-container">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-6">
-              <Button
-                variant="ghost"
-                onClick={handleBack}
-                className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back
-              </Button>
-              <div className="h-4 w-px bg-border"></div>
-              <h1 className="text-lg font-medium text-foreground">Training Portal</h1>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <User className="h-4 w-4" />
-                <span>{user?.name || user?.email || 'User'}</span>
-              </div>
-              <Button
-                variant="outline"
-                onClick={handleLogout}
-                className="border-border/50 hover:bg-muted/50"
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+  
 
       {/* Main Content */}
       <div className="minimal-container minimal-section">
